@@ -21,15 +21,24 @@ pub trait IntoQuery: for<'a> View<'a> {
     fn query() -> Query<Self, Self::Filter>;
 }
 
+impl<V, F> Default for Query<V, F>
+where
+    V: for<'a> View<'a>,
+    F: EntityFilter,
+{
+    fn default() -> Query<V, F> {
+        return Query {
+            _view: PhantomData,
+            filter: Mutex::new(<F as Default>::default()),
+            layout_matches: HashMap::new(),
+        }
+    }
+}
+
 impl<T: for<'a> View<'a>> IntoQuery for T {
     fn query() -> Query<Self, Self::Filter> {
         Self::validate();
-
-        Query {
-            _view: PhantomData,
-            filter: Mutex::new(<Self::Filter as Default>::default()),
-            layout_matches: HashMap::new(),
-        }
+        Query::default()
     }
 }
 

@@ -92,6 +92,7 @@ pub use crate::internals::query::{
         passthrough::Passthrough,
         try_component::TryComponentFilter,
         DynamicFilter, EntityFilter, FilterResult, GroupMatcher, LayoutFilter,
+        EntityFilterTuple,
     },
     view::{
         read::Read, try_read::TryRead, try_write::TryWrite, write::Write, DefaultFilter, Fetch,
