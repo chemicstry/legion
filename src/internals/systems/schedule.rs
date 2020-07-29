@@ -452,22 +452,32 @@ impl Builder {
     }
 
     /// Adds a thread local function to the schedule. This function will be executed on the main thread.
-    pub fn add_thread_local_fn<F: FnMut(&mut World, &mut Resources) + 'static>(
-        mut self,
-        f: F,
-    ) -> Self {
+    pub fn with_thread_local_fn<F: FnMut(&mut World, &mut Resources) + 'static>(&mut self, f: F) {
         self.finalize_executor();
         self.steps.push(Step::ThreadLocalFn(
             Box::new(f) as Box<dyn FnMut(&mut World, &mut Resources)>
         ));
+    }
+
+    /// Adds a thread local function to the schedule. This function will be executed on the main thread.
+    pub fn add_thread_local_fn<F: FnMut(&mut World, &mut Resources) + 'static>(
+        mut self,
+        f: F,
+    ) -> Self {
+        self.with_thread_local_fn(f);
         self
     }
 
     /// Adds a thread local system to the schedule. This system will be executed on the main thread.
-    pub fn add_thread_local<S: Runnable + 'static>(mut self, system: S) -> Self {
+    pub fn with_thread_local<S: Runnable + 'static>(&mut self, system: S) {
         self.finalize_executor();
         let system = Box::new(system) as Box<dyn Runnable>;
         self.steps.push(Step::ThreadLocalSystem(system));
+    }
+
+    /// Adds a thread local system to the schedule. This system will be executed on the main thread.
+    pub fn add_thread_local<S: Runnable + 'static>(mut self, system: S) -> Self {
+        self.with_thread_local(system);
         self
     }
 
