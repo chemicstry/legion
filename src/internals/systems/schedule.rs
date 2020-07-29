@@ -424,8 +424,13 @@ pub struct Builder {
 
 impl Builder {
     /// Adds a system to the schedule.
-    pub fn add_system<T: ParallelRunnable + 'static>(mut self, system: T) -> Self {
+    pub fn with_system<T: ParallelRunnable + 'static>(&mut self, system: T) {
         self.accumulator.push(Box::new(system));
+    }
+
+    /// Adds a system to the schedule.
+    pub fn add_system<T: ParallelRunnable + 'static>(mut self, system: T) -> Self {
+        self.with_system(system);
         self
     }
 
